@@ -60,7 +60,7 @@
     <artifactId>exec-maven-plugin</artifactId>
     <version>3.6.2</version>
     <configuration>
-        <mainClass>Ministries</mainClass>
+        <mainClass>Main</mainClass>
     </configuration>
 </plugin>
         <plugin>
