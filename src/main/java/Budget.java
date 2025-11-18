@@ -13,7 +13,7 @@ public class Budget {
     public void setAmount(int amount) {
         this.amount = amount; 
     }
-    public static void main(String[] args) {
+    public static void getBudget() {
     Gson gson = new Gson();
     try (FileReader reader = new FileReader("GreakBudget25.json")) {
         Budget[] budgets = gson.fromJson(reader, Budget[].class);
