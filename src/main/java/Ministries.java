@@ -13,15 +13,19 @@ public class Ministries {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+    public static void getMinistry() {
         Gson gson = new Gson();
-        FileReader reader = new FileReader("src/main/resources/config/ministries25.json")
+        try (FileReader reader = new FileReader("src/main/resources/config/ministries25.json")) {
             Ministries[] ministry = gson.fromJson(reader, Ministries[].class);
-            int totall = 0;
+            int totall = 0; {
             for (Ministries m : ministry) {
                 System.out.println("υπουργείο:" + m.getCategory());
                 System.out.println("ποσό:" + m.getAmount());
                 totall += m.getAmount();
-
             }
-    
+        } 
+        }  catch (IOException e) {
+        e.printStackTrace();
     }
+        }
+}
