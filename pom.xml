@@ -56,6 +56,14 @@
           <version>3.8.0</version>
         </plugin>
         <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>3.6.2</version>
+    <configuration>
+        <mainClass>Ministries</mainClass>
+    </configuration>
+</plugin>
+        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
         </plugin>
