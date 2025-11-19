@@ -51,6 +51,14 @@
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
         </plugin>
+          <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>3.6.2</version>
+    <configuration>
+        <mainClass>package.Main</mainClass> <!-- Πλήρες όνομα κλάσης -->
+    </configuration>
+</plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.0</version>
