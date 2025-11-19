@@ -56,7 +56,7 @@
     <artifactId>exec-maven-plugin</artifactId>
     <version>3.6.2</version>
     <configuration>
-        <mainClass>package.Main</mainClass> <!-- Πλήρες όνομα κλάσης -->
+        <mainClass>Main</mainClass> <!-- Πλήρες όνομα κλάσης -->
     </configuration>
 </plugin>
         <plugin>
