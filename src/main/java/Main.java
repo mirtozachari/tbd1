@@ -12,6 +12,8 @@ public class Main {
         }
         MinistryPrinter printer = new MinistryPrinter(ministries);
         printer.display();
+        Ministrypercentage p = new Ministrypercentage(ministries);
+        p.display();
     }
 }
     
