@@ -1,19 +1,12 @@
-import com.google.gson.Gson;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class Main {
     public static void main(String[] args) {
-        Ministries[] ministries = new Ministries[0];
-        try (FileReader reader = new FileReader("src/main/resources/config/ministries25.json")) {
-            ministries = new Gson().fromJson(reader, Ministries[].class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        MinistryPrinter printer = new MinistryPrinter(ministries);
-        printer.display();
-        Ministrypercentage p = new Ministrypercentage(ministries);
-        p.display();
+        Ministries[] ministries = MinistryLoader.load("src/main/resources/config/ministries25.json");
+        Revenues[] revenues = RevenuesLoader.load("src/main/resources/config/revenue25.json");
+        MinistryPrinter ministryPrinter = new MinistryPrinter(ministries);
+        ministryPrinter.display();
+        Ministrypercentage ministryPercentage = new Ministrypercentage(ministries);
+        ministryPercentage.display();
+        RevenuesPrinter revenuesPrinter = new RevenuesPrinter(revenues);
+        revenuesPrinter.display();
     }
 }
-    
