@@ -1,1 +1,35 @@
-# tbd1
+SUBJECT: PRIME MINISTER FOR A DAY
+
+This project’s main purpose is to create a system for reviewing and editing the state budget.
+
+Description
+
+A project written in Java that manages the revenue and expenses of the Greek state budget for 2024, as well as the individual budgets of each ministry.
+It also includes a user options menu with features such as displaying specific details of a selected ministry, showing the percentage of the total budget corresponding to each ministry, and allowing modifications to these data.
+
+The user options menu includes:
+
+Display of revenues and expenses of all ministries
+Display of each ministry’s percentage of the total budget
+Display of all revenues
+Display of all expenses
+Display of the budget of a specific ministry selected by the user
+
+Technologies / Tools
+
+Java
+GitHub
+Discord
+Maven
+Visual Studio Code
+ChatGPT
+
+File Structure
+TBD1/
+│── src/
+│   ├── main/
+│   └── test/java
+│
+│── target
+│── README.md
+└── pom.xml
