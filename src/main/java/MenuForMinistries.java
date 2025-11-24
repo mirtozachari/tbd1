@@ -19,6 +19,7 @@ public class MenuForMinistries {
         // βάζουμε nextLine() αντί για nextInt() για να μην "σκάσει" το πρόγραμμα σε περίπτωση εισόδου μιας σειρά χαρακτήρων αντί για τον ζητούμενο αριθμό
         try {
             int y = Integer.parseInt(x);
+            //μετατρέπει τον αριθμό από τύπου String σε τύπου int
             if (y >= 1 && y < ministries.length ) {
                 Ministries m = ministries[y - 1];
                 System.out.print("Επέλεξες το: " +  m.getCategory() + " ");
