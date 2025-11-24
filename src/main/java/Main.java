@@ -27,6 +27,8 @@ public class Main {
             case 4
             :
         System.out.println("Δες τα στοιχεία του Υπουργείου που σε ενδιαφέρει:");
+        MenuForMinistries menu = new MenuForMinistries(ministries);
+        menu.Menu();
         break;
         default:
             System.out.println("Άκυρος αριθμός");
