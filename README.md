@@ -17,12 +17,12 @@ Display of the budget of a specific ministry selected by the user
 
 Technologies / Tools
 
-Java
-GitHub
-Discord
-Maven
-Visual Studio Code
-ChatGPT
+Java     
+GitHub          
+Discord          
+Maven           
+Visual Studio Code        
+ChatGPT         
 
 File Structure
 TBD1/     
