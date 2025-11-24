@@ -19,6 +19,9 @@ public class Main {
         RevenuesPrinter revenuesPrinter = new RevenuesPrinter(revenues);
         revenuesPrinter.display();
         break;
+            case 3:
+        System.out.println("Δες τα στοιχεία του Υπουργείου που σε ενδιαφέρει:");
+        break;
         }
 
     }
