@@ -25,7 +25,7 @@ public class Main {
         ExpensesPrinter expensesPrinter = new ExpensesPrinter(expenses);
         expensesPrinter.display();
         break;
-            case 4//εμφάνιση προϋπολογισμού
+            case 4//εμφάνιση προϋπολογισμού συγκεκριμένου υπουργείου που επιλέγει ο χρήστης
             :
         System.out.println("Δες τα στοιχεία του Υπουργείου που σε ενδιαφέρει:");
         MenuForMinistries menu = new MenuForMinistries(ministries);
