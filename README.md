@@ -9,11 +9,11 @@ It also includes a user options menu with features such as displaying specific d
 
 The user options menu includes:
 
-Display of revenues and expenses of all ministries
-Display of each ministry’s percentage of the total budget
-Display of all revenues
-Display of all expenses
-Display of the budget of a specific ministry selected by the user
+Display of revenues and expenses of all ministries     
+Display of each ministry’s percentage of the total budget     
+Display of all revenues     
+Display of all expenses     
+Display of the budget of a specific ministry selected by the user   
 
 Technologies / Tools
 
@@ -25,11 +25,11 @@ Visual Studio Code
 ChatGPT
 
 File Structure
-TBD1/
-│── src/
-│   ├── main/
-│   └── test/java
-│
-│── target
-│── README.md
-└── pom.xml
+TBD1/     
+│── src/      
+│   ├── main/     
+│   └── test/java     
+│     
+│── target     
+│── README.md    
+└── pom.xml    
