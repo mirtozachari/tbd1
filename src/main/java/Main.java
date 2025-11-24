@@ -8,8 +8,7 @@ public class Main {
         Revenues[] revenues = RevenuesLoader.load("src/main/resources/config/revenue25.json");
         Expenses[] expenses = ExpensesLoader.load("src/main/resources/config/expenses25.json");
         switch (x) {
-            case 0:
-            case 0:// εμφάνιση στοιχείων όλων των υπουργείων
+            case 0: // εμφάνιση στοιχείων όλων των υπουργείων
         MinistryPrinter ministryPrinter = new MinistryPrinter(ministries);
         ministryPrinter.display();
         break;
