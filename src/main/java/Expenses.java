@@ -16,7 +16,7 @@ public class Expenses {
     public void setCategory() {
         this.category = category;
     }
-    public static void main(String[] args) {
+    public void printExpenses(String[] args) {
     Gson gson = new Gson();
     try (FileReader reader = new FileReader("EXPENSES25.json")) {
         Expense[] expenses = gson.fromJson(reader, Expense[].class);
@@ -29,3 +29,4 @@ public class Expenses {
     }
   }
 }
+
