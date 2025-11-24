@@ -16,17 +16,5 @@ public class Expenses {
     public void setCategory() {
         this.category = category;
     }
-    public void printExpenses(String[] args) {
-    Gson gson = new Gson();
-    try (FileReader reader = new FileReader("EXPENSES25.json")) {
-        Expense[] expenses = gson.fromJson(reader, Expense[].class);
-    for (Expense ex : expenses) {
-        System.out.println("κατηγορία:" + ex.getCategory());
-        System.out.println("ποσό:" + ex.getAmount());
-    } 
-} catch (IOException e) {
-        e.printStackTrace();
-    }
-  }
 }
 
