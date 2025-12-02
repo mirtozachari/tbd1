@@ -1,9 +1,11 @@
 import java.util.Scanner;
 public class MenuForMinistries {
    private Ministries[] ministries;
+
     public MenuForMinistries(Ministries[] ministries) {
         this.ministries = ministries;
     }
+
     public void Menu() {
         System.out.println("Δώσε υπουργείο:");
         boolean flag = false;
@@ -33,7 +35,7 @@ public class MenuForMinistries {
         } catch (NumberFormatException e) {
             System.out.println("Πρέπει να δώσεις αριθμό. Ξαναδοκίμασε.");
         }
-        }    
-    }     
+        }
     }
+}
 

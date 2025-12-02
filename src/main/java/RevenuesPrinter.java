@@ -1,8 +1,10 @@
 public class RevenuesPrinter implements Displayable {
-     private Revenues[] revenues;
+    private Revenues[] revenues;
+    
     public RevenuesPrinter(Revenues[] revenues) {
         this.revenues = revenues;
     }
+
     @Override
     public void display() {
         long total = 0;

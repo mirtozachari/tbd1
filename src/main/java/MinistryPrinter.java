@@ -1,8 +1,10 @@
 public class MinistryPrinter implements Displayable {
    private Ministries[] ministries;
+
     public MinistryPrinter(Ministries[] ministries) {
         this.ministries = ministries;
     }
+    
     @Override
     public void display() {
         long total = 0;

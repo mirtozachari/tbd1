@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class ExpensesLoader {
+    
     public static Expenses[] load(String path) {
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(path)) {

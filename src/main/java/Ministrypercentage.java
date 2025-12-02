@@ -1,8 +1,10 @@
 public class Ministrypercentage implements Displayable {
     private Ministries[] ministries;
+
     public Ministrypercentage(Ministries[] ministries) {
         this.ministries = ministries;
     }
+    
     @Override
     public void display() {
         long total = 0;
