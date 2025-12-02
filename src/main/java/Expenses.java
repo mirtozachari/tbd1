@@ -1,7 +1,9 @@
 import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.IOException;
+
 public class Expenses {
+
     private String category;
     private long amount;
 
@@ -14,11 +16,10 @@ public class Expenses {
     }
 
     public void setAmount(long amount) {
-        this.amount = amount; 
+        this.amount = amount;
     }
-    
-    public void setCategory() {
+
+    public void setCategory(String category) {
         this.category = category;
     }
 }
-
