@@ -66,7 +66,7 @@ public class PrimeMinisterApp {
             e.printStackTrace();
         }
     }
-    
+
 private void initializeDatabase(Connection conn) throws SQLException {
         
         System.out.println(YELLOW + "Εκτελείται αρχική ρύθμιση βάσης δεδομένων..." + RESET);
@@ -178,4 +178,127 @@ private void initializeDatabase(Connection conn) throws SQLException {
         }
         
         System.out.println(GREEN + "Η αρχική ρύθμιση της βάσης ολοκληρώθηκε." + RESET);
+    }
+    private void showDashboard(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+
+        ResultSet rsRev = stmt.executeQuery("SELECT SUM(amount) FROM State_Revenue");
+        double totalRevenue = 0;
+        if (rsRev.next()) totalRevenue = rsRev.getDouble(1);
+
+        ResultSet rsGenExp = stmt.executeQuery("SELECT SUM(amount) FROM State_General_Expenses");
+        double totalGeneralExpenses = 0;
+        if (rsGenExp.next()) totalGeneralExpenses = rsGenExp.getDouble(1);
+
+        ResultSet rsMinExp = stmt.executeQuery("SELECT SUM(total_amount) FROM Ministry_Budget");
+        double totalMinistryExpenses = 0;
+        if (rsMinExp.next()) totalMinistryExpenses = rsMinExp.getDouble(1);
+
+        double balance = totalRevenue - totalGeneralExpenses;
+
+        System.out.println("\n=======================================================");
+        System.out.printf("ΣΥΝΟΛΙΚΑ ΕΣΟΔΑ (Άρθρο 1):         %,20.2f €\n", totalRevenue);
+        System.out.printf("ΣΥΝΟΛΙΚΑ ΕΞΟΔΑ (Άρθρο 1):         %,20.2f €\n", totalGeneralExpenses);
+        System.out.println("-------------------------------------------------------");
+
+        if (balance >= 0) {
+            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  " + GREEN + "+%,20.2f € (ΠΛΕΟΝΑΣΜΑ)" + RESET + "\n", balance);
+        } else {
+            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  " + RED + "%,20.2f € (ΕΛΛΕΙΜΜΑ)" + RESET + "\n", balance);
+        }
+
+        System.out.println("-------------------------------------------------------");
+        System.out.printf("Σύνολο Κατανεμημένο σε Υπουργεία: %,20.2f €\n", totalMinistryExpenses);
+
+        double diff = totalGeneralExpenses - totalMinistryExpenses;
+        if (Math.abs(diff) > 1000) {
+            System.out.println(YELLOW + "ΠΡΟΣΟΧΗ: Υπάρχει απόκλιση " + String.format("%,.2f", diff) + "€ μεταξύ Γενικού Συνόλου και Υπουργείων!" + RESET);
+        } else {
+            System.out.println(GREEN + "✓ Η κατανομή στα Υπουργεία συμφωνεί με το Γενικό Σύνολο." + RESET);
+        }
+        System.out.println("=======================================================");
+    }
+
+    private void listMinistries(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT code, name, total_amount FROM Ministry_Budget ORDER BY code");
+
+        System.out.println("\n--- ΛΙΣΤΑ ΥΠΟΥΡΓΕΙΩΝ & ΦΟΡΕΩΝ ---");
+        System.out.printf("%-6s %-50s %20s\n", "ΚΩΔ.", "ΟΝΟΜΑΣΙΑ", "ΠΡΟΫΠΟΛΟΓΙΣΜΟΣ");
+        System.out.println("--------------------------------------------------------------------------------");
+        while (rs.next()) {
+            System.out.printf("%-6d %-50s %,20.2f €\n",
+                    rs.getInt("code"),
+                    truncate(rs.getString("name"), 50),
+                    rs.getDouble("total_amount"));
+        }
+    }
+
+    private void modifyBudget(Connection conn, Scanner scanner) throws SQLException {
+        System.out.print("\nΔώσε τον Κωδικό του Υπουργείου προς αλλαγή (π.χ. 1020): ");
+        if (!scanner.hasNextInt()) { scanner.next(); return; }
+        int code = scanner.nextInt();
+
+        String query = "SELECT name, total_amount FROM Ministry_Budget WHERE code = ?";
+        PreparedStatement pst = conn.prepareStatement(query);
+        pst.setInt(1, code);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            String name = rs.getString("name");
+            double oldAmount = rs.getDouble("total_amount");
+
+            System.out.println("Επιλέξατε: " + BOLD + name + RESET);
+            System.out.printf("Τρέχον Ποσό: %,.2f €\n", oldAmount);
+
+            if (code == 1024) {
+                System.out.println(RED + "ΠΡΟΣΟΧΗ: Αυτός ο κωδικός περιλαμβάνει την εξυπηρέτηση του Δημοσίου Χρέους!" + RESET);
+            }
+
+            System.out.print("Δώσε το ΝΕΟ συνολικό ποσό: ");
+            if (!scanner.hasNextDouble()) { scanner.next(); return; }
+            double newAmount = scanner.nextDouble();
+
+            if (newAmount < 0) {
+                System.out.println(RED + "ΣΦΑΛΜΑ: Ο προϋπολογισμός δεν μπορεί να είναι αρνητικός!" + RESET);
+                return;
+            }
+            
+            if (newAmount < oldAmount * 0.5) {
+                System.out.print(YELLOW + "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Επιχειρείτε τεράστια περικοπή (>50%). Είστε σίγουρος; (ν/ο): " + RESET);
+                String confirm = scanner.next();
+                if (!confirm.equalsIgnoreCase("ν")) {
+                    System.out.println("Η αλλαγή ακυρώθηκε.");
+                    return;
+                }
+            }
+
+            conn.setAutoCommit(false);
+            try {
+                String updateSql = "UPDATE Ministry_Budget SET total_amount = ? WHERE code = ?";
+                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+                updateStmt.setDouble(1, newAmount);
+                updateStmt.setInt(2, code);
+                updateStmt.executeUpdate();
+
+                String logSql = "INSERT INTO ChangeLog (ministry_code, old_total, new_total) VALUES (?, ?, ?)";
+                PreparedStatement logStmt = conn.prepareStatement(logSql);
+                logStmt.setInt(1, code);
+                logStmt.setDouble(2, oldAmount);
+                logStmt.setDouble(3, newAmount);
+                logStmt.executeUpdate();
+                
+                conn.commit();
+                System.out.println(GREEN + "Η αλλαγή καταχωρήθηκε επιτυχώς!" + RESET);
+
+            } catch (SQLException e) {
+                conn.rollback();
+                System.out.println(RED + "Σφάλμα κατά την αποθήκευση. Έγινε επαναφορά." + RESET);
+                e.printStackTrace();
+            }
+            conn.setAutoCommit(true);
+
+        } else {
+            System.out.println(RED + "Δεν βρέθηκε υπουργείο με αυτόν τον κωδικό." + RESET);
+        }
     }
