@@ -302,3 +302,36 @@ private void initializeDatabase(Connection conn) throws SQLException {
             System.out.println(RED + "Δεν βρέθηκε υπουργείο με αυτόν τον κωδικό." + RESET);
         }
     }
+    private void showHistory(Connection conn) throws SQLException {
+        String sql = "SELECT b.name, c.old_total, c.new_total, c.change_date " +
+                     "FROM ChangeLog c JOIN Ministry_Budget b ON c.ministry_code = b.code " +
+                     "ORDER BY c.change_date DESC";
+        
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+
+        System.out.println("\n--- ΙΣΤΟΡΙΚΟ ΑΛΛΑΓΩΝ (LOG) ---");
+        boolean found = false;
+        while (rs.next()) {
+            found = true;
+            double oldVal = rs.getDouble("old_total");
+            double newVal = rs.getDouble("new_total");
+            double diff = newVal - oldVal;
+            
+            String arrow = (diff > 0) ? GREEN + "ΑΥΞΗΣΗ" + RESET : RED + "ΜΕΙΩΣΗ" + RESET;
+            
+            System.out.printf("[%s] %s\n   Από: %,.2f € -> Σε: %,.2f € (%s κατά %,.2f €)\n",
+                rs.getString("change_date"),
+                rs.getString("name"),
+                oldVal, newVal, arrow, Math.abs(diff));
+            System.out.println("----------------------------------------------------");
+        }
+        if (!found) System.out.println("Δεν έχουν καταγραφεί αλλαγές ακόμα.");
+    }
+
+    private String truncate(String str, int width) {
+        if (str.length() > width)
+            return str.substring(0, width - 3) + "...";
+        return str;
+    }
+}
