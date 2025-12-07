@@ -17,6 +17,7 @@ public class Main {
             System.out.println("Για εμφάνιση όλων των εξόδων πάτα 3");
             System.out.println("Για εμφάνιση στοιχείων όλων των υπουργείων και επιλογή ενός πάτα 4");
             System.out.println("Για εισαγωγή αλλαγών πάτα 5");
+            System.out.println("Για να εμφανιστούν γραφήματα πάτα 6:");
             System.out.println("Για έξοδο από την εφαρμογή πάτα 100");
             x = scanner.nextInt();
 
@@ -52,7 +53,15 @@ public class Main {
                     break;
                 case 5: // Δυνατότητα εισαγωγής αλλαγών
                     System.out.println("Δώσε τις επιθυμητές αλλαγές:");
-                    
+                    break;
+                case 6: // Γραφήματα
+                System.out.println("Δες τα γραφήματα:");
+                 try {
+            diagramministries.diagram();  
+                 } catch (Exception e) {
+            e.printStackTrace();
+            }
+                break;
 
                 case 100: // Έξοδος από την εφαρμογή
                     System.out.println("Καληνύχτα κύριε πρωθυπουργέ!");
