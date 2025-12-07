@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.Scanner;
 
-public class PrimeMinisterApp {
+public class Dataimporter {
 
     private final String DB_URL = "jdbc:mysql://localhost:3306/budget_db";
     private final String USER = "root";
