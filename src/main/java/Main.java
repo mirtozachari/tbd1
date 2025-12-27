@@ -22,7 +22,7 @@ public class Main {
             x = scanner.nextInt();
 
             Ministries[] ministries = MinistryLoader.load("src/main/resources/config/ministries25.json");
-            Revenues[] revenues = RevenuesLoader.load("src/main/resources/config/revenue25.json");
+            Revenues[] revenues = RevenuesLoader.load("src/main/resources/config/revenues25.json");
             Expenses[] expenses = ExpensesLoader.load("src/main/resources/config/expenses25.json");
 
             switch (x) {
@@ -71,5 +71,6 @@ public class Main {
                     System.out.println("Άκυρος αριθμός");
             }
         }
+        scanner.close();
     }
 }

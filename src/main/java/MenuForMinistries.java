@@ -42,5 +42,6 @@ public class MenuForMinistries {
                 System.out.println("Πρέπει να δώσεις αριθμό. Ξαναδοκίμασε.");
             }
         }
+        scanner.close();
     }
 }
