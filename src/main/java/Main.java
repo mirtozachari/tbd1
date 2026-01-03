@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
+        
         Scanner scanner = new Scanner(System.in); // Ξεκινάει το μενού επιλογών του χρήστη
         int x = 0;
         System.out.println("ΕΠΙΛΟΓΗ ΠΡΟΥΠΟΛΟΓΙΣΜΟΥ ΕΤΟΥΣ¨:2023, 2024, 2025");
@@ -40,6 +40,10 @@ public class Main {
                 System.out.println("6: Γραφήματα");
                 System.out.println("100: Έξοδος");
                 
+
+            while (x != 100) {
+                MainMenu.mainMeNuOptionsPrinter();
+
                 x = scanner.nextInt();
               
             } 
@@ -101,6 +105,7 @@ public class Main {
 
         scanner.close();
     }
+}
 }
 
 
