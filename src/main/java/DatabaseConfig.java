@@ -1,100 +1,168 @@
-import java.sql.*;
+import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DatabaseConfig {
+    public static final Map<Integer, Ministry> ministries = new TreeMap<>();
+    public static final List<ChangeLog> changeLogs = new ArrayList<>();
+    public static double totalStateRevenue = 0;
+    public static double totalGeneralExpenses = 0;
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/budget_db";
-    private static final String USER = "root";
-    private static final String PASS = "";
+    public static void initializeDatabase(int year) {
+        ministries.clear();
+        changeLogs.clear();
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, USER, PASS);
+        switch (year) {
+            case 2023:
+                load2023();
+                break;
+            case 2024:
+                load2024();
+                break;
+            case 2025:
+                load2025();
+                break;
+            default:
+                System.out.println("Δεν υπάρχουν δεδομένα για το έτος " + year + ". Φόρτωση δεδομένων 2023.");
+                load2023();
+                break;
+        }
     }
 
-    public static void initializeDatabase(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
-        
-        String[] createTablesSQL = {
-            "CREATE TABLE IF NOT EXISTS State_Revenue (code INT PRIMARY KEY, category_name VARCHAR(255), amount DECIMAL(25,2))",
-            "CREATE TABLE IF NOT EXISTS State_General_Expenses (code INT PRIMARY KEY, category_name VARCHAR(255), amount DECIMAL(25,2))",
-            "CREATE TABLE IF NOT EXISTS Ministry_Budget (code INT PRIMARY KEY, name VARCHAR(255), regular_budget DECIMAL(25,2), investment_budget DECIMAL(25,2), total_amount DECIMAL(25,2))",
-            "CREATE TABLE IF NOT EXISTS ChangeLog (log_id INT AUTO_INCREMENT PRIMARY KEY, ministry_code INT, old_total DECIMAL(25,2), new_total DECIMAL(25,2), change_date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (ministry_code) REFERENCES Ministry_Budget(code))"
-        };
-        
-        for (String sql : createTablesSQL) {
-            stmt.execute(sql);
+    private static void load2023() {
+        totalStateRevenue = 798039000000.0;
+        totalGeneralExpenses = 806878193000.0;
+
+        seedMinistry(1001, "Προεδρία της Δημοκρατίας", 4263000);
+        seedMinistry(1003, "Βουλή των Ελλήνων", 149900000);
+        seedMinistry(1004, "Προεδρία της Κυβέρνησης", 40679000);
+        seedMinistry(1007, "Υπουργείο Εσωτερικών", 3548748000.0);
+        seedMinistry(1009, "Υπουργείο Εξωτερικών", 282175000);
+        seedMinistry(1011, "Υπουργείο Εθνικής Άμυνας", 5707800000.0);
+        seedMinistry(1015, "Υπουργείο Υγείας", 5202388000.0);
+        seedMinistry(1017, "Υπουργείο Δικαιοσύνης", 566374000);
+        seedMinistry(1019, "Υπουργείο Παιδείας και Θρησκευμάτων", 6080504000.0);
+        seedMinistry(1021, "Υπουργείο Πολιτισμού και Αθλητισμού", 458563000);
+        seedMinistry(1023, "Υπουργείο Οικονομικών", 748592323000.0);
+        seedMinistry(1029, "Υπουργείο Αγροτικής Ανάπτυξης και Τροφίμων", 1547980000.0);
+        seedMinistry(1031, "Υπουργείο Περιβάλλοντος και Ενέργειας", 1707333000.0);
+        seedMinistry(1033, "Υπουργείο Εργασίας και Κοινωνικής Υποθέσεων", 22492686000.0);
+        seedMinistry(1035, "Υπουργείο Ανάπτυξης και Επενδύσεων", 3295349000.0);
+        seedMinistry(1039, "Υπουργείο Υποδομών και Μεταφορών", 2346259000.0);
+        seedMinistry(1041, "Υπουργείο Ναυτιλίας και Νησιωτικής Πολιτικής", 498453000);
+        seedMinistry(1045, "Υπουργείο Τουρισμού", 239360000);
+        seedMinistry(1053, "Υπουργείο Ψηφιακής Διακυβέρνησης", 972937000);
+        seedMinistry(1055, "Υπουργείο Μετανάστευσης και Ασύλου", 418728000);
+        seedMinistry(1057, "Υπουργείο Προστασίας του Πολίτη", 2012833000.0);
+        seedMinistry(1059, "Υπουργείο Κλιματικής Κρίσης και Πολιτικής Προστασίας", 643473000);
+        seedMinistry(1901, "Αποκεντρωμένη Διοίκηση Αττικής", 11610000);
+        seedMinistry(1902, "Αποκεντρωμένη Διοίκηση Θεσσαλίας - Στερεάς Ελλάδας", 7723000);
+        seedMinistry(1903, "Αποκεντρωμένη Διοίκηση Ηπείρου - Δυτικής Μακεδονίας", 8468000);
+        seedMinistry(1904, "Αποκεντρωμένη Διοίκηση Πελοποννήσου - Δυτικής Ελλάδας και Ιονίου", 12467000);
+        seedMinistry(1905, "Αποκεντρωμένη Διοίκηση Αιγαίου", 5631000);
+        seedMinistry(1906, "Αποκεντρωμένη Διοίκηση Κρήτης", 6068000);
+        seedMinistry(1907, "Αποκεντρωμένη Διοίκηση Μακεδονίας - Θράκης", 17118000);
+    }
+
+    private static void load2024() {
+        totalStateRevenue = 1107649000000.0;
+        totalGeneralExpenses = 1108188270000.0;
+
+        seedMinistry(1001, "Προεδρία της Δημοκρατίας", 4636000);
+        seedMinistry(1003, "Βουλή των Ελλήνων", 160400000);
+        seedMinistry(1004, "Προεδρία της Κυβέρνησης", 43259000);
+        seedMinistry(1007, "Υπουργείο Εσωτερικών", 3705487000.0);
+        seedMinistry(1009, "Υπουργείο Εξωτερικών", 407892000);
+        seedMinistry(1011, "Υπουργείο Εθνικής Άμυνας", 6123388000.0);
+        seedMinistry(1015, "Υπουργείο Υγείας", 6027031000.0);
+        seedMinistry(1017, "Υπουργείο Δικαιοσύνης", 625464000);
+        seedMinistry(1020, "Υπουργείο Παιδείας, Θρησκευμάτων και Αθλητισμού", 6547630000.0);
+        seedMinistry(1022, "Υπουργείο Πολιτισμού", 400113000);
+        seedMinistry(1024, "Υπουργείο Εθνικής Οικονομίας και Οικονομικών", 1049897798000.0);
+        seedMinistry(1029, "Υπουργείο Αγροτικής Ανάπτυξης και Τροφίμων", 1184694000.0);
+        seedMinistry(1031, "Υπουργείο Περιβάλλοντος και Ενέργειας", 1823158000.0);
+        seedMinistry(1032, "Υπουργείο Εργασίας και Κοινωνικής Ασφάλισης", 18629492000.0);
+        seedMinistry(1034, "Υπουργείο Κοινωνικής Συνοχής και Οικογένειας", 3992039000.0);
+        seedMinistry(1036, "Υπουργείο Ανάπτυξης", 924661000);
+        seedMinistry(1039, "Υπουργείο Υποδομών και Μεταφορών", 2350117000.0);
+        seedMinistry(1041, "Υπουργείο Ναυτιλίας και Νησιωτικής Πολιτικής", 576280000);
+        seedMinistry(1045, "Υπουργείο Τουρισμού", 167787000);
+        seedMinistry(1053, "Υπουργείο Ψηφιακής Διακυβέρνησης", 843765000);
+        seedMinistry(1055, "Υπουργείο Μετανάστευσης και Ασύλου", 473304000);
+        seedMinistry(1057, "Υπουργείο Προστασίας του Πολίτη", 2262973000.0);
+        seedMinistry(1060, "Υπουργείο Κλιματικής Κρίσης και Πολιτικής Προστασίας", 936610000);
+        seedMinistry(1901, "Αποκεντρωμένη Διοίκηση Αττικής", 11629000);
+        seedMinistry(1902, "Αποκεντρωμένη Διοίκηση Θεσσαλίας - Στερεάς Ελλάδας", 10659000);
+        seedMinistry(1903, "Αποκεντρωμένη Διοίκηση Ηπείρου - Δυτικής Μακεδονίας", 9796000);
+        seedMinistry(1904, "Αποκεντρωμένη Διοίκηση Πελοποννήσου - Δυτικής Ελλάδας και Ιονίου", 15415000);
+        seedMinistry(1905, "Αποκεντρωμένη Διοίκηση Αιγαίου", 6211000);
+        seedMinistry(1906, "Αποκεντρωμένη Διοίκηση Κρήτης", 6719000);
+        seedMinistry(1907, "Αποκεντρωμένη Διοίκηση Μακεδονίας - Θράκης", 19863000);
+    }
+
+    private static void load2025() {
+        totalStateRevenue = 1304827000000.0;
+        totalGeneralExpenses = 1307907506000.0;
+
+        seedMinistry(1001, "Προεδρία της Δημοκρατίας", 4638000);
+        seedMinistry(1003, "Βουλή των Ελλήνων", 171950000);
+        seedMinistry(1004, "Προεδρία της Κυβέρνησης", 41689000);
+        seedMinistry(1007, "Υπουργείο Εσωτερικών", 3830276000.0);
+        seedMinistry(1009, "Υπουργείο Εξωτερικών", 420237000);
+        seedMinistry(1011, "Υπουργείο Εθνικής Άμυνας", 6130000000.0);
+        seedMinistry(1015, "Υπουργείο Υγείας", 7177424000.0);
+        seedMinistry(1017, "Υπουργείο Δικαιοσύνης", 650803000);
+        seedMinistry(1020, "Υπουργείο Παιδείας, Θρησκευμάτων και Αθλητισμού", 6606000000.0);
+        seedMinistry(1022, "Υπουργείο Πολιτισμού", 575419000);
+        seedMinistry(1024, "Υπουργείο Εθνικής Οικονομίας και Οικονομικών", 1246518464000.0);
+        seedMinistry(1029, "Υπουργείο Αγροτικής Ανάπτυξης και Τροφίμων", 1281403000.0);
+        seedMinistry(1031, "Υπουργείο Περιβάλλοντος και Ενέργειας", 2341227000.0);
+        seedMinistry(1032, "Υπουργείο Εργασίας και Κοινωνικής Ασφάλισης", 18678084000.0);
+        seedMinistry(1034, "Υπουργείο Κοινωνικής Συνοχής και Οικογένειας", 3989553000.0);
+        seedMinistry(1036, "Υπουργείο Ανάπτυξης", 818045000);
+        seedMinistry(1039, "Υπουργείο Υποδομών και Μεταφορών", 2694810000.0);
+        seedMinistry(1041, "Υπουργείο Ναυτιλίας και Νησιωτικής Πολιτικής", 651864000);
+        seedMinistry(1045, "Υπουργείο Τουρισμού", 189293000);
+        seedMinistry(1053, "Υπουργείο Ψηφιακής Διακυβέρνησης", 1073928000);
+        seedMinistry(1055, "Υπουργείο Μετανάστευσης και Ασύλου", 475871000);
+        seedMinistry(1057, "Υπουργείο Προστασίας του Πολίτη", 2285820000.0);
+        seedMinistry(1060, "Υπουργείο Κλιματικής Κρίσης και Πολιτικής Προστασίας", 1221116000);
+        seedMinistry(1901, "Αποκεντρωμένη Διοίκηση Αττικής", 13091000);
+        seedMinistry(1902, "Αποκεντρωμένη Διοίκηση Θεσσαλίας - Στερεάς Ελλάδας", 10579000);
+        seedMinistry(1903, "Αποκεντρωμένη Διοίκηση Ηπείρου - Δυτικής Μακεδονίας", 9943000);
+        seedMinistry(1904, "Αποκεντρωμένη Διοίκηση Πελοποννήσου - Δυτικής Ελλάδας και Ιονίου", 14918000);
+        seedMinistry(1905, "Αποκεντρωμένη Διοίκηση Αιγαίου", 6188000);
+        seedMinistry(1906, "Αποκεντρωμένη Διοίκηση Κρήτης", 6497000);
+        seedMinistry(1907, "Αποκεντρωμένη Διοίκηση Μακεδονίας - Θράκης", 18376000);
+    }
+
+    private static void seedMinistry(int code, String name, double amount) {
+        ministries.put(code, new Ministry(code, name, amount));
+    }
+
+    public static class Ministry {
+        public int code;
+        public String name;
+        public double totalAmount;
+
+        public Ministry(int code, String name, double totalAmount) {
+            this.code = code;
+            this.name = name;
+            this.totalAmount = totalAmount;
         }
-        
-        String[] insertDataSQL = {
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (11, 'Φόροι', 65586000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (12, 'Κοινωνικές εισφορές', 60000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (13, 'Μεταβιβάσεις', 10943000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (14, 'Πωλήσεις αγαθών και υπηρεσιών', 1201000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (15, 'Λοιπά τρέχοντα έσοδα', 2407000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (31, 'Πάγια Περιουσιακά Στοιχεία', 51000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (43, 'Χρεωστικοί τίτλοι', 11000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (44, 'Δάνεια (Προσφυγή)', 5525000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (45, 'Συμμετοχικοί τίτλοι & επενδύσεις', 228000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (52, 'Υποχρεώσεις από νόμισμα/καταθέσεις', 63000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (53, 'Χρεωστικοί τίτλοι (Υποχρεώσεις)', 23875000000)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (54, 'Δάνεια (Αναχρηματοδότηση)', 1654726000000.00)",
-            "INSERT IGNORE INTO State_Revenue (code, category_name, amount) VALUES (57, 'Χρηματοοικονομικά παράγωγα', 959000000)",
+    }
 
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (21, 'Παροχές σε εργαζομένους', 15688490000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (22, 'Κοινωνικές παροχές', 627779000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (23, 'Μεταβιβάσεις', 35897013000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (24, 'Αγορές αγαθών και υπηρεσιών', 2388349000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (25, 'Επιδοτήσεις', 80330000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (26, 'Τόκοι', 7917420000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (27, 'Λοιπές δαπάνες', 101259000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (29, 'Πιστώσεις υπό κατανομή', 19989259000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (31, 'Πάγια περιουσιακά στοιχεία', 3355541000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (33, 'Τιμαλφή', 84000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (44, 'Δάνεια (Πληρωμές)', 12079352000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (45, 'Συμμετοχικοί τίτλοι & επενδύσεις', 1587084000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (53, 'Χρεωστικοί τίτλοι (Λήξεις)', 24909729000)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (54, 'Δάνεια (Λήξεις - Χρεολύσια)', 1659113701000.00)",
-            "INSERT IGNORE INTO State_General_Expenses (code, category_name, amount) VALUES (57, 'Χρηματοοικονομικά παράγωγα', 341662000)",
+    public static class ChangeLog {
+        public String ministryName;
+        public double oldTotal;
+        public double newTotal;
+        public String date;
 
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1001, 'Προεδρία της Δημοκρατίας', 4951000, 0, 4951000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1003, 'Βουλή των Ελλήνων', 184900000, 2000000, 186900000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1004, 'Προεδρία της Κυβέρνησης', 39905000, 6000000, 45905000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1007, 'Υπουργείο Εσωτερικών', 3731668000, 432000000, 4163668000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1009, 'Υπουργείο Εξωτερικών', 439237000, 44000000, 483237000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1011, 'Υπουργείο Εθνικής Άμυνας', 6955272000, 108000000, 7063272000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1015, 'Υπουργείο Υγείας', 6945945000, 896000000, 7841945000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1017, 'Υπουργείο Δικαιοσύνης', 616577000, 63000000, 679577000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1020, 'Υπ. Παιδείας, Θρησκευμάτων & Αθλητισμού', 5899933000, 864000000, 6763933000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1022, 'Υπουργείο Πολιτισμού', 278109000, 375000000, 653109000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1024, 'Υπ. Εθνικής Οικονομίας & Οικονομικών', 1714338966000.00, 3069954000, 1717408920000.00)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1029, 'Υπ. Αγροτικής Ανάπτυξης & Τροφίμων', 296877000, 1207000000, 1503877000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1031, 'Υπουργείο Περιβάλλοντος και Ενέργειας', 318452000, 2815000000, 3133452000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1032, 'Υπ. Εργασίας & Κοινωνικής Ασφάλισης', 18429078000, 672000000, 19101078000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1034, 'Υπ. Κοινωνικής Συνοχής και Οικογένειας', 3570316000, 233000000, 3803316000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1036, 'Υπουργείο Ανάπτυξης', 128476000, 670000000, 798476000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1039, 'Υπουργείο Υποδομών και Μεταφορών', 1031756000, 2360000000, 3391756000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1041, 'Υπ. Ναυτιλίας και Νησιωτικής Πολιτικής', 367593000, 389000000, 756593000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1045, 'Υπουργείο Τουρισμού', 40992000, 197000000, 237992000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1053, 'Υπουργείο Ψηφιακής Διακυβέρνησης', 154403000, 1237000000, 1391403000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1055, 'Υπουργείο Μετανάστευσης και Ασύλου', 156133000, 380000000, 536133000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1057, 'Υπουργείο Προστασίας του Πολίτη', 2513285000, 90000000, 2603285000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1060, 'Υπ. Κλιματικής Κρίσης & Πολ. Προστασίας', 856115000, 582000000, 1438115000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1901, 'Αποκεντρωμένη Διοίκηση Αττικής', 14380000, 0, 14380000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1902, 'Αποκεντρωμένη Διοίκηση Θεσσαλίας-Στερεάς', 11142000, 0, 11142000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1903, 'Αποκεντρωμένη Διοίκηση Ηπείρου-Δ.Μακεδονίας', 10981000, 0, 10981000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1904, 'Αποκεντρωμένη Διοίκηση Πελοποννήσου-Ιονίου', 15556000, 0, 15556000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1905, 'Αποκεντρωμένη Διοίκηση Αιγαίου', 7149000, 0, 7149000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1906, 'Αποκεντρωμένη Διοίκηση Κρήτης', 7311000, 0, 7311000)",
-            "INSERT IGNORE INTO Ministry_Budget (code, name, regular_budget, investment_budget, total_amount) VALUES (1907, 'Αποκεντρωμένη Διοίκηση Μακεδονίας-Θράκης', 19640000, 0, 19640000)"
-        };
-        
-        for (String sql : insertDataSQL) {
-            try {
-                stmt.execute(sql);
-            } catch (SQLException e) {
-                if (!e.getMessage().contains("Duplicate entry")) {
-                    throw e; 
-                }
-            }
+        public ChangeLog(String ministryName, double oldTotal, double newTotal) {
+            this.ministryName = ministryName;
+            this.oldTotal = oldTotal;
+            this.newTotal = newTotal;
+            this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
     }
 }

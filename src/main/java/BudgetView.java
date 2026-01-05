@@ -1,26 +1,16 @@
-import java.sql.*;
+import java.util.Map;
 
 public class BudgetView {
+    private static final double DISCREPANCY_THRESHOLD = 1000.0;
 
-    private final String RESET = "\u001B[0m";
-    private final String RED = "\u001B[31m";
-    private final String GREEN = "\u001B[32m";
-    private final String YELLOW = "\u001B[33m";
-
-    public void showDashboard(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
-
-        ResultSet rsRev = stmt.executeQuery("SELECT SUM(amount) FROM State_Revenue");
-        double totalRevenue = 0;
-        if (rsRev.next()) totalRevenue = rsRev.getDouble(1);
-
-        ResultSet rsGenExp = stmt.executeQuery("SELECT SUM(amount) FROM State_General_Expenses");
-        double totalGeneralExpenses = 0;
-        if (rsGenExp.next()) totalGeneralExpenses = rsGenExp.getDouble(1);
-
-        ResultSet rsMinExp = stmt.executeQuery("SELECT SUM(total_amount) FROM Ministry_Budget");
+    public void showDashboard() {
+        double totalRevenue = DatabaseConfig.totalStateRevenue;
+        double totalGeneralExpenses = DatabaseConfig.totalGeneralExpenses;
+        
         double totalMinistryExpenses = 0;
-        if (rsMinExp.next()) totalMinistryExpenses = rsMinExp.getDouble(1);
+        for (DatabaseConfig.Ministry m : DatabaseConfig.ministries.values()) {
+            totalMinistryExpenses += m.totalAmount;
+        }
 
         double balance = totalRevenue - totalGeneralExpenses;
 
@@ -30,63 +20,60 @@ public class BudgetView {
         System.out.println("-------------------------------------------------------");
 
         if (balance >= 0) {
-            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  " + GREEN + "+%,20.2f € (ΠΛΕΟΝΑΣΜΑ)" + RESET + "\n", balance);
+            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  %s+%,20.2f € (ΠΛΕΟΝΑΣΜΑ)%s\n", 
+                ConsoleUtils.GREEN, balance, ConsoleUtils.RESET);
         } else {
-            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  " + RED + "%,20.2f € (ΕΛΛΕΙΜΜΑ)" + RESET + "\n", balance);
+            System.out.printf("ΔΗΜΟΣΙΟΝΟΜΙΚΟ ΑΠΟΤΕΛΕΣΜΑ:  %s%,20.2f € (ΕΛΛΕΙΜΜΑ)%s\n", 
+                ConsoleUtils.RED, balance, ConsoleUtils.RESET);
         }
 
         System.out.println("-------------------------------------------------------");
         System.out.printf("Σύνολο Κατανεμημένο σε Υπουργεία: %,20.2f €\n", totalMinistryExpenses);
 
         double diff = totalGeneralExpenses - totalMinistryExpenses;
-        if (Math.abs(diff) > 1000) {
-            System.out.println(YELLOW + "ΠΡΟΣΟΧΗ: Υπάρχει απόκλιση " + String.format("%,.2f", diff) + "€ μεταξύ Γενικού Συνόλου και Υπουργείων!" + RESET);
+        if (Math.abs(diff) > DISCREPANCY_THRESHOLD) {
+            System.out.printf("%sΠΡΟΣΟΧΗ: Υπάρχει απόκλιση %,.2f € μεταξύ Γενικού Συνόλου και Υπουργείων!%s\n", 
+                ConsoleUtils.YELLOW, diff, ConsoleUtils.RESET);
         } else {
-            System.out.println(GREEN + "✓ Η κατανομή στα Υπουργεία συμφωνεί με το Γενικό Σύνολο." + RESET);
+            System.out.println(ConsoleUtils.GREEN + "✓ Η κατανομή στα Υπουργεία συμφωνεί με το Γενικό Σύνολο." + ConsoleUtils.RESET);
         }
         System.out.println("=======================================================");
     }
 
-    public void listMinistries(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT code, name, total_amount FROM Ministry_Budget ORDER BY code");
-
+    public void listMinistries() {
         System.out.println("\n--- ΛΙΣΤΑ ΥΠΟΥΡΓΕΙΩΝ & ΦΟΡΕΩΝ ---");
         System.out.printf("%-6s %-50s %20s\n", "ΚΩΔ.", "ΟΝΟΜΑΣΙΑ", "ΠΡΟΫΠΟΛΟΓΙΣΜΟΣ");
         System.out.println("--------------------------------------------------------------------------------");
-        while (rs.next()) {
+        
+        for (DatabaseConfig.Ministry m : DatabaseConfig.ministries.values()) {
             System.out.printf("%-6d %-50s %,20.2f €\n",
-                    rs.getInt("code"),
-                    truncate(rs.getString("name"), 50),
-                    rs.getDouble("total_amount"));
+                    m.code,
+                    truncate(m.name, 50),
+                    m.totalAmount);
         }
     }
 
-    public void showHistory(Connection conn) throws SQLException {
-        String sql = "SELECT b.name, c.old_total, c.new_total, c.change_date " +
-                     "FROM ChangeLog c JOIN Ministry_Budget b ON c.ministry_code = b.code " +
-                     "ORDER BY c.change_date DESC";
-        
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-
+    public void showHistory() {
         System.out.println("\n--- ΙΣΤΟΡΙΚΟ ΑΛΛΑΓΩΝ (LOG) ---");
-        boolean found = false;
-        while (rs.next()) {
-            found = true;
-            double oldVal = rs.getDouble("old_total");
-            double newVal = rs.getDouble("new_total");
-            double diff = newVal - oldVal;
+        
+        if (DatabaseConfig.changeLogs.isEmpty()) {
+            System.out.println("Δεν έχουν καταγραφεί αλλαγές ακόμα.");
+            return;
+        }
+
+        for (int i = DatabaseConfig.changeLogs.size() - 1; i >= 0; i--) {
+            DatabaseConfig.ChangeLog log = DatabaseConfig.changeLogs.get(i);
             
-            String arrow = (diff > 0) ? GREEN + "ΑΥΞΗΣΗ" + RESET : RED + "ΜΕΙΩΣΗ" + RESET;
+            double diff = log.newTotal - log.oldTotal;
+            String arrow = (diff > 0) ? ConsoleUtils.GREEN + "ΑΥΞΗΣΗ" + ConsoleUtils.RESET 
+                                      : ConsoleUtils.RED + "ΜΕΙΩΣΗ" + ConsoleUtils.RESET;
             
             System.out.printf("[%s] %s\n   Από: %,.2f € -> Σε: %,.2f € (%s κατά %,.2f €)\n",
-                rs.getString("change_date"),
-                rs.getString("name"),
-                oldVal, newVal, arrow, Math.abs(diff));
+                log.date,
+                log.ministryName,
+                log.oldTotal, log.newTotal, arrow, Math.abs(diff));
             System.out.println("----------------------------------------------------");
         }
-        if (!found) System.out.println("Δεν έχουν καταγραφεί αλλαγές ακόμα.");
     }
 
     private String truncate(String str, int width) {

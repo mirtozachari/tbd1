@@ -1,80 +1,85 @@
-import java.sql.*;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 
 public class BudgetManager {
+    private static final int DEBT_MINISTRY_CODE = 1024;
+    private static final double SIGNIFICANT_CUT_THRESHOLD = 0.5;
 
-    private final String RESET = "\u001B[0m";
-    private final String RED = "\u001B[31m";
-    private final String GREEN = "\u001B[32m";
-    private final String YELLOW = "\u001B[33m";
-    private final String BOLD = "\u001B[1m";
+    public void modifyBudget(Scanner scanner) {
+        int code = promptForMinistryCode(scanner);
+        if (code == -1) return;
 
-    public void modifyBudget(Connection conn, Scanner scanner) throws SQLException {
-        System.out.print("\nΔώσε τον Κωδικό του Υπουργείου προς αλλαγή (π.χ. 1020): ");
-        if (!scanner.hasNextInt()) { scanner.next(); return; }
-        int code = scanner.nextInt();
-
-        String query = "SELECT name, total_amount FROM Ministry_Budget WHERE code = ?";
-        PreparedStatement pst = conn.prepareStatement(query);
-        pst.setInt(1, code);
-        ResultSet rs = pst.executeQuery();
-
-        if (rs.next()) {
-            String name = rs.getString("name");
-            double oldAmount = rs.getDouble("total_amount");
-
-            System.out.println("Επιλέξατε: " + BOLD + name + RESET);
-            System.out.printf("Τρέχον Ποσό: %,.2f €\n", oldAmount);
-
-            if (code == 1024) {
-                System.out.println(RED + "ΠΡΟΣΟΧΗ: Αυτός ο κωδικός περιλαμβάνει την εξυπηρέτηση του Δημοσίου Χρέους!" + RESET);
-            }
-
-            System.out.print("Δώσε το ΝΕΟ συνολικό ποσό: ");
-            if (!scanner.hasNextDouble()) { scanner.next(); return; }
-            double newAmount = scanner.nextDouble();
-
-            if (newAmount < 0) {
-                System.out.println(RED + "ΣΦΑΛΜΑ: Ο προϋπολογισμός δεν μπορεί να είναι αρνητικός!" + RESET);
-                return;
-            }
-            
-            if (newAmount < oldAmount * 0.5) {
-                System.out.print(YELLOW + "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Επιχειρείτε τεράστια περικοπή (>50%). Είστε σίγουρος; (ν/ο): " + RESET);
-                String confirm = scanner.next();
-                if (!confirm.equalsIgnoreCase("ν")) {
-                    System.out.println("Η αλλαγή ακυρώθηκε.");
-                    return;
-                }
-            }
-
-            conn.setAutoCommit(false);
-            try {
-                String updateSql = "UPDATE Ministry_Budget SET total_amount = ? WHERE code = ?";
-                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
-                updateStmt.setDouble(1, newAmount);
-                updateStmt.setInt(2, code);
-                updateStmt.executeUpdate();
-
-                String logSql = "INSERT INTO ChangeLog (ministry_code, old_total, new_total) VALUES (?, ?, ?)";
-                PreparedStatement logStmt = conn.prepareStatement(logSql);
-                logStmt.setInt(1, code);
-                logStmt.setDouble(2, oldAmount);
-                logStmt.setDouble(3, newAmount);
-                logStmt.executeUpdate();
-                
-                conn.commit();
-                System.out.println(GREEN + "Η αλλαγή καταχωρήθηκε επιτυχώς!" + RESET);
-
-            } catch (SQLException e) {
-                conn.rollback();
-                System.out.println(RED + "Σφάλμα κατά την αποθήκευση. Έγινε επαναφορά." + RESET);
-                e.printStackTrace();
-            }
-            conn.setAutoCommit(true);
-
-        } else {
-            System.out.println(RED + "Δεν βρέθηκε υπουργείο με αυτόν τον κωδικό." + RESET);
+        DatabaseConfig.Ministry ministry = DatabaseConfig.ministries.get(code);
+        if (ministry == null) {
+            System.out.println(ConsoleUtils.RED + "Δεν βρέθηκε υπουργείο με αυτόν τον κωδικό." + ConsoleUtils.RESET);
+            return;
         }
+
+        displayCurrentDetails(ministry);
+
+        double newAmount = promptForNewAmount(scanner);
+        if (newAmount < 0) return;
+
+        if (!confirmChange(scanner, ministry.totalAmount, newAmount)) {
+            System.out.println("Η αλλαγή ακυρώθηκε.");
+            return;
+        }
+
+        updateBudget(ministry, newAmount);
+    }
+
+    private int promptForMinistryCode(Scanner scanner) {
+        System.out.print("\nΔώσε τον Κωδικό του Υπουργείου προς αλλαγή (π.χ. 1020): ");
+        String input = scanner.next();
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println(ConsoleUtils.RED + "Σφάλμα: Παρακαλώ εισάγετε έγκυρο αριθμητικό κωδικό." + ConsoleUtils.RESET);
+            return -1;
+        }
+    }
+
+    private void displayCurrentDetails(DatabaseConfig.Ministry ministry) {
+        System.out.println("Επιλέξατε: " + ConsoleUtils.BOLD + ministry.name + ConsoleUtils.RESET);
+        System.out.printf("Τρέχον Ποσό: %,.2f €\n", ministry.totalAmount);
+        if (ministry.code == DEBT_MINISTRY_CODE) {
+            System.out.println(ConsoleUtils.RED + "ΠΡΟΣΟΧΗ: Αυτός ο κωδικός περιλαμβάνει την εξυπηρέτηση του Δημοσίου Χρέους!" + ConsoleUtils.RESET);
+        }
+    }
+
+    private double promptForNewAmount(Scanner scanner) {
+        System.out.print("Δώσε το ΝΕΟ συνολικό ποσό: ");
+        String input = scanner.next();
+        try {
+            input = input.replace(",", ".");
+            double amount = Double.parseDouble(input);
+            if (amount < 0) {
+                System.out.println(ConsoleUtils.RED + "ΣΦΑΛΜΑ: Ο προϋπολογισμός δεν μπορεί να είναι αρνητικός!" + ConsoleUtils.RESET);
+                return -1;
+            }
+            return amount;
+        } catch (NumberFormatException e) {
+            System.out.println(ConsoleUtils.RED + "Σφάλμα: Παρακαλώ εισάγετε έγκυρο ποσό." + ConsoleUtils.RESET);
+            return -1;
+        }
+    }
+
+    private boolean confirmChange(Scanner scanner, double oldAmount, double newAmount) {
+        if (newAmount < oldAmount * SIGNIFICANT_CUT_THRESHOLD) {
+            System.out.print(ConsoleUtils.YELLOW + "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Επιχειρείτε τεράστια περικοπή (>50%). Είστε σίγουρος; (ν/ο): " + ConsoleUtils.RESET);
+            String confirm = scanner.next().trim().toLowerCase();
+            Set<String> validYes = new HashSet<>(Arrays.asList("ν", "n", "y", "yes", "ναι"));
+            return validYes.contains(confirm);
+        }
+        return true;
+    }
+
+    private void updateBudget(DatabaseConfig.Ministry ministry, double newAmount) {
+        double oldAmount = ministry.totalAmount;
+        ministry.totalAmount = newAmount;
+        DatabaseConfig.changeLogs.add(new DatabaseConfig.ChangeLog(ministry.name, oldAmount, newAmount));
+        System.out.println(ConsoleUtils.GREEN + "Η αλλαγή καταχωρήθηκε επιτυχώς!" + ConsoleUtils.RESET);
     }
 }
