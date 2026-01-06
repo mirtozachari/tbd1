@@ -36,7 +36,6 @@ public class Main {
         }
         if (choice == 200) {
             MenuGraph.displayMenu(yearSelection);
-            ExecuteMenu.executeMenu(x, ministries, revenues, expenses);
         } else if (choice == 300) {
             while (x != 100) {
                 MainMenu.mainMeNuOptionsPrinter();
