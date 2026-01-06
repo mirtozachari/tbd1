@@ -86,7 +86,7 @@ public class Main {
                     case 6: // Γραφήματα
                     System.out.println("Δες τα γραφήματα:");
                     try {
-                diagramministries.diagram();  
+                DiagramMinistries.diagram();  
                     } catch (Exception e) {
                 e.printStackTrace();
                 }
