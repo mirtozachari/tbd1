@@ -3,7 +3,7 @@ import java.io.File;
 
 public class DiagramMinistries {
     public static void diagram() throws Exception {
-        File file = new File("src\\main\\resources\\config\\diagramministries.xlsx");
+        File file = new File("src/main/resources/config/diagramministries.xlsx");
         if (Desktop.isDesktopSupported()) {
             Desktop.getDesktop().open(file); // ανοίγει το Excel με το chart
         } else {
