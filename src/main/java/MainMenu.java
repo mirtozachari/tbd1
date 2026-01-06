@@ -1,6 +1,6 @@
 public class MainMenu {
 
-    public static void mainMeNuOptionsPrinter() {
+    public static void mainMenuOptionsPrinter() {
                 System.out.println("Δώσε αριθμό επιλογής για το μενού");
                 System.out.println("Για εμφάνιση στοιχείων όλων των υπουργείων πάτα 0");
                 System.out.println("Για εμφάνιση ποσοστών κάθε υπουργείου επί του συνολικού προϋπολογισμού πάτα 1");
