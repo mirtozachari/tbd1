@@ -35,7 +35,7 @@ public class MenuGraph {
         btn4.addActionListener(e -> new MenuForMinistries(ministries).Menu());
         btn6.addActionListener(e -> {
             try {
-                diagramministries.diagram();
+                DiagramMinistries.diagram();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
