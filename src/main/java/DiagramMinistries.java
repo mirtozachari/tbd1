@@ -1,7 +1,7 @@
 import java.awt.Desktop;
 import java.io.File;
 
-public class diagramministries {
+public class DiagramMinistries {
     public static void diagram() throws Exception {
         File file = new File("C:\\Users\\User\\Desktop\\tbd1\\src\\main\\resources\\config\\diagramministries.xlsx");
         if (Desktop.isDesktopSupported()) {
