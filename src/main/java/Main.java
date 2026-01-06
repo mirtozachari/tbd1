@@ -31,17 +31,6 @@ public class Main {
             MenuGraph.displayMenu(yearSelection);
         } else if (choice == 300) {
             while (x != 100) {
-                System.out.println("\n--- ΜΕΝΟΥ ΕΠΙΛΟΓΩΝ ---");
-                System.out.println("0: Στοιχεία υπουργείων");
-                System.out.println("1: Ποσοστά προϋπολογισμού");
-                System.out.println("2: Έσοδα");
-                System.out.println("3: Έξοδα");
-                System.out.println("4: Επιλογή υπουργείου");
-                System.out.println("6: Γραφήματα");
-                System.out.println("100: Έξοδος");
-                
-
-            while (x != 100) {
                 MainMenu.mainMeNuOptionsPrinter();
 
                 x = scanner.nextInt();
