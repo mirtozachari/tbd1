@@ -1,8 +1,12 @@
 BudgetManager.class
+DatabaseConfig$Ministry.class
 Ministries.class
 BudgetView.class
+DatabaseConfig$ChangeLog.class
 MinistryPrinter.class
 MenuForMinistries.class
+MainMenu.class
+ExecuteMenu.class
 Main.class
 Revenues.class
 MinistryLoader.class
@@ -10,9 +14,11 @@ RevenuesPrinter.class
 Expenses.class
 Ministrypercentage.class
 ExpensesLoader.class
+MenuGraph.class
 DatabaseConfig.class
+DiagramMinistries.class
 RevenuesLoader.class
+ConsoleUtils.class
 ExpensesPrinter.class
 Displayable.class
 PrimeMinisterApp.class
-diagramministries.class

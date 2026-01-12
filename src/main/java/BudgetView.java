@@ -1,5 +1,3 @@
-import java.util.Map;
-
 public class BudgetView {
     private static final double DISCREPANCY_THRESHOLD = 1000.0;
 
