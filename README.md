@@ -32,7 +32,7 @@ The user options menu includes:
 ---
 
 ## 📁 File Structure
----
+```
 TBD1/ 
 ├── src/ 
 │ ├── main/ 
@@ -44,7 +44,7 @@ TBD1/
 ├── pom.xml 
 └── README.md 
 
----
+```
 ## ⚙️ Algorithms and Databases Used
 
 - Multiple **dependencies and plugins** are included in the `pom.xml` file.
