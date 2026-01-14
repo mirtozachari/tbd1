@@ -18,8 +18,7 @@ To compile and test the project, run:
 
 ```bash
 mvn clean install
----
-exit
+```
 ## 🧭 User Options Menu
 
 The user options menu includes:
