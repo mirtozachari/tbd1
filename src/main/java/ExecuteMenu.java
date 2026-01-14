@@ -20,7 +20,7 @@ public class ExecuteMenu {
                         ExpensesPrinter expensesPrinter = new ExpensesPrinter(expenses);
                         expensesPrinter.display();
                         break;
-
+                    /* 
                     case 4: // Εμφάνιση προϋπολογισμού συγκεκριμένου υπουργείου που επιλέγει ο χρήστης
                         System.out.println("Δες τα στοιχεία του Υπουργείου που σε ενδιαφέρει:");
                         MenuForMinistries menu = new MenuForMinistries(ministries);
@@ -29,6 +29,7 @@ public class ExecuteMenu {
                     case 5: // Δυνατότητα εισαγωγής αλλαγών
                         System.out.println("Δώσε τις επιθυμητές αλλαγές:");
                         break;
+                    */
                     case 6: // Γραφήματα
                     System.out.println("Δες τα γραφήματα:");
                     try {
