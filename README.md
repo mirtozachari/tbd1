@@ -1,38 +1,29 @@
-SUBJECT: PRIME MINISTER FOR A DAY
+# PRIME MINISTER FOR A DAY
 
-This project’s main purpose is to create a system for reviewing and editing the state budget.
+## 📄 Description
 
-Description
+A project written in **Java** that manages the revenues and expenses of the Greek state budget for the years **2023, 2024, and 2025**, as well as the individual budgets of each ministry.
 
-A project written in Java that manages the revenue and expenses of the Greek state budget for 2024, as well as the individual budgets of each ministry.
-It also includes a user options menu with features such as displaying specific details of a selected ministry, showing the percentage of the total budget corresponding to each ministry, and allowing modifications to these data.
+The application includes a user options menu with features such as:
+- Displaying specific details of a selected ministry
+- Showing the percentage of the total budget corresponding to each ministry
+- Allowing modifications to the stored data
+
+---
+
+## 🧭 User Options Menu
 
 The user options menu includes:
 
-Display of revenues and expenses of all ministries     
-Display of each ministry’s percentage of the total budget     
-Display of all revenues     
-Display of all expenses     
-Display of the budget of a specific ministry selected by the user   
+- Display of revenues and expenses of all ministries  
+- Display of each ministry’s percentage of the total budget  
+- Display of all revenues  
+- Display of all expenses  
+- Display of the budget of a specific ministry selected by the user  
 
-Technologies / Tools
+---
 
-Java     
-GitHub          
-Discord          
-Maven           
-Visual Studio Code        
-ChatGPT         
-
-File Structure       
-TBD1/     
-│── src/      
-│   ├── main/     
-│   └── test/java     
-│     
-│── target     
-│── README.md    
-└── pom.xml    
+## 📁 File Structure
 
 # PRIME MINISTER FOR A DAY
 
@@ -61,3 +52,27 @@ The user options menu includes:
 
 ## 📁 File Structure
 
+TBD1/ 
+├── src/ 
+│ ├── main/ 
+│ │ └── java/ 
+│ │ └── resources/config 
+│ └── test/java/ 
+│── LICENSE  
+├── .gitignore 
+├── pom.xml 
+└── README.md 
+
+
+## ⚙️ Algorithms and Databases Used
+
+- Multiple **dependencies and plugins** are included in the `pom.xml` file.
+- A **structured SQL database** has been developed in order to store the budget data and all committed changes.
+
+
+## 🛠️ Compilation and Test Instructions
+
+To compile and test the project, run:
+
+```bash
+mvn clean install
