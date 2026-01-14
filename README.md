@@ -25,33 +25,6 @@ The user options menu includes:
 
 ## 📁 File Structure
 
-# PRIME MINISTER FOR A DAY
-
-## 📄 Description
-
-A project written in **Java** that manages the revenues and expenses of the Greek state budget for the years **2023, 2024, and 2025**, as well as the individual budgets of each ministry.
-
-The application includes a user options menu with features such as:
-- Displaying specific details of a selected ministry
-- Showing the percentage of the total budget corresponding to each ministry
-- Allowing modifications to the stored data
-
----
-
-## 🧭 User Options Menu
-
-The user options menu includes:
-
-- Display of revenues and expenses of all ministries  
-- Display of each ministry’s percentage of the total budget  
-- Display of all revenues  
-- Display of all expenses  
-- Display of the budget of a specific ministry selected by the user  
-
----
-
-## 📁 File Structure
-
 TBD1/ 
 ├── src/ 
 │ ├── main/ 
