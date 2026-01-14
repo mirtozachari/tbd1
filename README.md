@@ -18,7 +18,7 @@ To compile and test the project, run:
 
 ```bash
 mvn clean install
-
+---
 
 ## 🧭 User Options Menu
 
