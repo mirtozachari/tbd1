@@ -22,7 +22,6 @@ public class MenuGraph {
         JButton btn1 = new JButton("Ποσοστό επί του προϋπολογισμού");
         JButton btn2 = new JButton("Έσοδα");
         JButton btn3 = new JButton("Έξοδα");
-        // JButton btn4 = new JButton("Επιλογή συγκεκριμένου υπουργείου");
         JButton btn6 = new JButton("Γραφήματα");
         JButton btnExit = new JButton("Έξοδος");
 
@@ -31,7 +30,6 @@ public class MenuGraph {
         btn1.addActionListener(e -> new Ministrypercentage(ministries).display());
         btn2.addActionListener(e -> new RevenuesPrinter(revenues).display());
         btn3.addActionListener(e -> new ExpensesPrinter(expenses).display());
-        //btn4.addActionListener(e -> new MenuForMinistries(ministries).Menu());
         btn6.addActionListener(e -> {
             try {
                 DiagramMinistries.diagram();
@@ -45,7 +43,6 @@ public class MenuGraph {
         jf.add(btn0); jf.add(btn1); jf.add(btn2);
         jf.add(btn3);  jf.add(btn6);
         jf.add(btnExit);
-        //jf.add(btn4);
 
         jf.setVisible(true);
     }
