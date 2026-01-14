@@ -11,6 +11,15 @@ The application includes a user options menu with features such as:
 
 ---
 
+
+## 🛠️ Compilation and Test Instructions
+
+To compile and test the project, run:
+
+```bash
+mvn clean install
+
+
 ## 🧭 User Options Menu
 
 The user options menu includes:
