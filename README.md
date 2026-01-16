@@ -50,10 +50,3 @@ TBD1/
 - Multiple **dependencies and plugins** are included in the `pom.xml` file.
 - A **structured SQL database** has been developed in order to store the budget data and all committed changes.
 
-
-## 🛠️ Compilation and Test Instructions
-
-To compile and test the project, run:
-
-```bash
-mvn clean install
